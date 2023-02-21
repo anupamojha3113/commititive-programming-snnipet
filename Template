@@ -1,0 +1,82 @@
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace std;
+using namespace __gnu_pbds;
+using namespace chrono;
+template <class T>
+using oset = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+#define int long long
+#define ll int
+#define float double
+#define pb push_back
+#define ff first
+#define ss second
+#define all(c) c.begin(), c.end()
+#define sz(x) ((int)(x).size())
+#define rev(a, n) for (int a = n - 1; a >= 0; a--)
+#define rep(a, n) for (int a = 0; a < n; a++)
+#define rep1(i,n) for (int i = 1; i <= n; i++)
+#define debug(x) cerr << #x<<" ";cerr<<x; cerr << endl;
+const int N = 1e6 + 10, mod = 1e+9 + 7;
+
+// IO helper begins
+
+template <typename T>
+using prqueues = priority_queue<T, vector<T>, greater<T>>;
+template <typename Container, typename T = typename std::enable_if<!is_same<Container, string>::value, typename Container::value_type>::type>
+istream &operator>>(istream &is, Container &v)
+{
+  for (T &x : v)
+    is >> x;
+  return is;
+}
+template <typename Container, typename T = typename enable_if<!is_same<Container, string>::value, typename Container::value_type>::type>
+ostream &operator<<(ostream &os, const Container &v)
+{
+  for (const T &x : v)
+    os << x << " ";
+  return os << endl;
+}
+void print()
+{
+  cout << '\n';
+}
+
+template <typename T, typename... TAIL>
+void print(const T &t, TAIL... tail)
+{
+  cout << t << " ";
+  print(tail...);
+}
+
+// IO helper ends
+
+void solve()
+{
+  
+}
+
+signed main()
+{
+  std::ios::sync_with_stdio(false);
+  std::cin.tie(nullptr);
+  std::cout.tie(nullptr);
+  auto start1 = high_resolution_clock::now();
+  std::cout<<fixed;
+  std::cout<<setprecision(10);
+  int tt = 1;
+  // std::cin >> tt;
+  while (tt--)
+  {
+    solve();
+    // cout<<std::solve()<<"\n";
+  }
+  auto stop1 = high_resolution_clock::now();
+  auto duration = duration_cast<microseconds>(stop1 - start1);
+  cerr << "Time: " << duration . count() / 1000 << endl;
+  return 0;
+}
+
