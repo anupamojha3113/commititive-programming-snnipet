@@ -1,0 +1,93 @@
+class Segment_Tree{
+public:
+    vector<int>Seg;
+    vector<int>Lazy;
+    void init(int n){
+        Seg.resize(4*n+5);
+        Lazy.resize(4*n+5);
+    }
+    void build_Tree(int ind,int low,int high,vector<int>&arr){
+        if(low==high){
+            //What is required to store at vector<node>Seg 
+            Seg[ind]=arr[low];
+            return;
+        }
+        int mid=(low+high)>>1;
+        build_Tree(2*ind+1,low,mid,arr);
+        build_Tree(2*ind+2,mid+1,high,arr);
+        //work
+        Seg[ind]=Seg[2*ind+1]+Seg[2*ind+2];
+    }
+    int query(int ind,int low,int high,int l,int r){
+        // No Overlap then eat cadbury 5 star and do nothing
+        if(r<low||high<l) return 0;
+        // compelete overlap
+        if(low>=l&&high<=r) return Seg[ind];
+        //Partial overlap
+        int mid=(low+high)>>1;
+        int left=query(2*ind+1,low,mid,l,r);
+        int right=query(2*ind+2,mid+1,high,l,r);
+        // work
+        return left+right;
+    }
+    void Point_Update(int ind,int low,int high,int update_ind,int val){
+        if(low==high) {
+            Seg[ind]=val;
+            return;
+        }
+        int mid=(low+high)>>1;
+        if(update_ind<=mid) Point_Update(2*ind+1,low,mid,update_ind,val);
+        else Point_Update(2*ind+2,mid+1,high,update_ind,val);
+        Seg[ind]=Seg[2*ind+1]+Seg[2*ind+2];
+    }
+    void Lazy_Update(int ind,int low,int high,int l,int r,int val){
+        //check if any update is pending 
+        // if pending then do the updates and propogate updates downwards
+        if(Lazy[ind]){ 
+            // Do pending work
+            Seg[ind]+=(high-low+1)*Lazy[ind];
+            // transfer pending work downwards
+            // to go downward check if we can go down or not means check for leaf node
+            if(low!=high){
+                 Lazy[2*ind+1]+=Lazy[ind];
+                 Lazy[2*ind+2]+=Lazy[ind];
+            }
+            Lazy[ind]=0;
+        }
+        // No Overlap then eat cadbury 5 star and do nothing
+        if(low>r||high<l) return;
+        // Full Overlap 
+        if(l<=low&&r>=high){
+            // Do work
+             Seg[ind]+=(high-low+1)*val;
+            // transfer new updates to the Lazy child ,if it is not leaf node then it will have child
+              if(low!=high){
+                    Lazy[2*ind+1] += val;
+                    Lazy[2*ind+2] += val;
+                 } 
+            return;
+        }
+        // partial overlap
+        int mid=(low+high)>>1;
+        Lazy_Update(2*ind+1,low,mid,l,r,val);
+        Lazy_Update(2*ind+2,mid+1,high,l,r,val); 
+        // you are returning from child then update the current node and relax
+        Seg[ind]=Seg[2*ind+1]+Seg[2*ind+2];
+    }
+    int Lazy_query(int ind,int low,int high,int l,int r){
+        if(Lazy[ind]){
+            Seg[ind]+=(high-low+1)*Lazy[ind];
+            if(low!=high){
+                 Lazy[2*ind+1]+=Lazy[ind];
+                 Lazy[2*ind+2]+=Lazy[ind];
+            }
+            Lazy[ind]=0;
+        }
+        if(r<low||high<l) return 0;
+        if(low>=l&&high<=r) return Seg[ind];
+        int mid=(low+high)>>1;
+        int left=Lazy_query(2*ind+1,low,mid,l,r);
+        int right=Lazy_query(2*ind+2,mid+1,high,l,r);
+        return left+right;
+    }
+};
