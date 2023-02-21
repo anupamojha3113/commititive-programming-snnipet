@@ -1,0 +1,37 @@
+class Inversion_Count{
+private:
+ll merge(ll arr[],ll low, ll mid,ll  high){
+    ll  l=mid-low+1,r=high-mid,L[l+1],R[r+1], t=low;
+    L[l]=R[r]=1e18;
+    for(ll i=0;i<l;i++){
+        L[i]=arr[t++];
+    }
+    for(ll i=0;i<r;i++){
+        R[i]=arr[t++];
+    }
+   ll i=0,j=0,k=low,cnt=0;
+    while(i<l||j<r){
+        if(L[i]<=R[j]){
+            arr[k++]=L[i++];
+        }
+        else { 
+             arr[k++]=R[j++];
+            cnt+=l-i;
+        }
+    }
+    return cnt;
+}
+ll  mergesort(ll  arr[],ll low,ll high){
+   if(low>=high) return 0;
+   ll mid=(low+high)>>1;
+   ll  left=mergesort(arr,low,mid);
+   ll  right=mergesort(arr,mid+1,high);
+   ll  curr_ans=merge(arr,low,mid,high);
+    return left+right+curr_ans;
+}
+public:
+    ll inversionCount(ll arr[], ll N)
+    {
+        return mergesort(arr,0,N-1);
+    }
+};
