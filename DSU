@@ -1,0 +1,25 @@
+struct DSU {
+    std::vector<int> f, siz , high, low;
+    DSU(int n) : f(n), siz(n, 1) , high(n) , low(n)
+    { 
+        std::iota(f.begin(), f.end(), 0); 
+        std::iota(low.begin(), low.end(), 0); 
+        std::iota(high.begin(), high.end(), 0); 
+    }
+    int parent(int x) {
+        while (x != f[x]) x = f[x] = f[f[x]];
+        return x;
+    }
+    bool same(int x, int y) { return parent(x) == parent(y); }
+    bool merge(int x, int y) {
+        x = parent(x);
+        y = parent(y);
+        if (x == y) return false;
+        siz[x] += siz[y];
+        f[y] = x;
+        low[x]=std::min(low[y],low[x]);
+        high[x]=std::max(high[y],high[x]);
+        return true;
+    }
+    int size(int x) { return siz[parent(x)]; }
+};
