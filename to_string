@@ -1,0 +1,9 @@
+string to_str(ll n){
+  string s;
+  while(n>0){
+    s.push_back(n%10+48);
+    n/=10;
+  }
+  reverse(all(s));
+  return s;
+}
