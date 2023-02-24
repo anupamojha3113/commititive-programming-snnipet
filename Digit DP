@@ -1,0 +1,33 @@
+ll dp[20][2][200];
+
+vector<ll> numDigits(ll n)
+{
+  vector<ll> result;
+  while (n)
+  {
+    result.push_back(n % 10);
+    n /= 10;
+  }
+  return result;
+}
+
+// brute TC O(10^digits in number)
+// Memoization -> dp[ind][SUM][IS_EQUAL] TC ~= O(Log(N))
+
+ll func(ll ind, ll sum, bool isLastEqual, vector<ll> &digits)// this func gives numbers of number less than |digits| with digit sum =  10
+{
+  if (ind == -1)
+    return sum;
+     if (dp[ind][isLastEqual][sum] != -1)  return dp[ind][isLastEqual][sum];
+
+  ll limit = isLastEqual?digits[ind]:9;
+  ll result = 0;
+  for (ll current = 0; current <= limit; current++)
+  {    
+    if (digits[ind] == current)
+      result += func(ind - 1, sum + current, isLastEqual, digits);
+    else
+      result += func(ind - 1, sum + current, false, digits);
+  }
+   return isLastEqual ? result : dp[ind][isLastEqual][sum]= result;
+}
