@@ -12,7 +12,7 @@ vector<ll> numDigits(ll n)
 }
 
 // brute TC O(10^digits in number)
-// Memoization -> dp[ind][SUM][IS_EQUAL] TC ~= O(Log(N))
+// Memoization -> dp[ind][IS_EQUAL][SUM] TC ~= O(Log(N))
 
 ll func(ll ind, ll sum, bool isLastEqual, vector<ll> &digits)// this func gives numbers of number less than |digits| with digit sum =  10
 {
