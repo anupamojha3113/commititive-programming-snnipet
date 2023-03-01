@@ -1,0 +1,147 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define float double
+#define ff first
+#define ss second
+#define all(c) c.begin(), c.end()
+#define sz(x) (ll) x.size()
+#define debug(x) cerr << "x ", cerr << x, cerr << "\n";
+#define printans(okk) cout << (okk ? "YES\n" : "NO\n");
+#define iofast ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
+const ll N=1e6+7,mod=1e9+7,nodes=1e5+7,LOG=18,INF=1e17;
+class Graph
+{
+public:
+    int timer = 0;
+    const int LOG = 18, nodes = 1e5 + 7;
+    vector<pair<int, int>> adj[100007];
+    vector<int> tin;
+    vector<int> tout;
+    vector<vector<int>> Parent;
+    vector<vector<int>> max_path;
+    vector<vector<int>> min_path;
+    vector<int> lca_depth;
+    vector<int> height;
+    vector<int> vis;
+    void init(int n)
+    {
+        adj->assign(n, {});
+        tin.assign(n, 0);
+        tout.assign(n, 0);
+        lca_depth.assign(n, 0);
+        height.assign(n, 0);
+        vis.assign(n, 0);
+        Parent.assign(n, vector<int>(LOG, 0));
+        max_path.assign(n, vector<int>(LOG, 0));
+        min_path.assign(n, vector<int>(LOG, 0));
+    }
+    void dfs(int root, int par, int depth, ll minLen, ll maxLen)
+    {
+        tin[root] = ++timer;
+        Parent[root][0] = par;
+        min_path[root][0] = minLen;
+        max_path[root][0] = maxLen;
+        lca_depth[root] = depth;
+        vis[root] = 1;
+        for (int i = 1; i < LOG; i++)
+        {
+            Parent[root][i] = Parent[Parent[root][i - 1]][i - 1];
+            min_path[root][i] = min(min_path[root][i - 1], min_path[Parent[root][i - 1]][i - 1]);
+            max_path[root][i] = max(max_path[root][i - 1], max_path[Parent[root][i - 1]][i - 1]);
+        }
+        for (auto child : adj[root])
+        {
+            if (!vis[child.first])
+            {
+                dfs(child.first, root, depth + 1, child.second, child.second);
+                height[root] = max(height[root], height[child.first] + 1);
+            }
+        }
+        tout[root] = ++timer;
+    }
+
+    bool isAncestor(int u, int v)
+    {
+        return (tin[u] <= tin[v] && tout[u] >= tout[v]);
+    }
+
+    int get_lca(int u, int v)
+    {
+        if (isAncestor(u, v))
+            return u;
+        if (isAncestor(v, u))
+            return v;
+        for (int i = LOG - 1; i >= 0; i--)
+        {
+            if (!isAncestor(Parent[u][i], v))
+            {
+                u = Parent[u][i];
+            }
+        }
+        return Parent[u][0];
+    }
+    int dist(int u, int v)
+    {
+        return lca_depth[u] + lca_depth[v] - 2 * lca_depth[get_lca(u, v)];
+    }
+    pair<int, int> query(int u, int v)
+    {
+        int lca = get_lca(u, v);
+        int shLength = 1e8;
+        int lgLength = 0;
+        for (int j = LOG - 1; j >= 0; j--)
+        {
+            if (isAncestor(lca, Parent[u][j]))
+            {
+                shLength = min(shLength, min_path[u][j]);
+                lgLength = max(lgLength, max_path[u][j]);
+                u = Parent[u][j];
+            }
+        }
+        for (int j = LOG - 1; j >= 0; j--)
+        {
+            if (isAncestor(lca, Parent[v][j]))
+            {
+                shLength = min(shLength, min_path[v][j]);
+                lgLength = max(lgLength, max_path[v][j]);
+                v = Parent[v][j];
+            }
+        }
+        return make_pair(shLength, lgLength);
+    }
+};
+void solve(){
+   int N, u, v, d;
+    cin >> N;
+    Graph gh;
+    gh.init(N + 10);
+    for (int i = 0; i < N - 1; i++)
+    {
+        cin >> u >> v >> d;
+        gh.adj[u].push_back(make_pair(v, d));
+        gh.adj[v].push_back(make_pair(u, d));
+    }
+    gh.dfs(1, 1, 0, INT_MAX, 0);
+    int q;
+    cin >> q;
+    while (q--)
+    {
+        cin >> u >> v;
+        auto answer = gh.query(u, v);
+        cout << answer.first << " " << answer.second << "\n";
+    }
+}
+signed main()
+{
+  iofast
+  cout<< fixed << setprecision(10);
+  ll tt = 1;
+  // cin >> tt;
+  while (tt--)
+  {
+    solve();
+    // cout<<solve()<<"\n";
+  }
+  return 0;
+}
